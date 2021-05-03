@@ -13,7 +13,7 @@ const PoseEstimation = observer(() => {
   const camRef = useRef(null)
   const canvasRef = useRef(null)
   // Gyroscope coordinates
-  const [alfa, setAlfa] = useState()
+  const [alpha, setAlpha] = useState()
   const [beta, setBeta] = useState()
   const [gamma, setGamma] = useState()
 
@@ -37,8 +37,19 @@ const PoseEstimation = observer(() => {
   }
 
   const handleOrientation = event => {
-    setAlfa(event)
-    console.log(event)
+    if (event && typeof event !== "undefined") {
+      var a = event.deviceorientation.alpha
+      var b = event.deviceorientation.beta
+      var g = event.deviceorientation.gamma
+
+      setAlpha(a)
+      setBeta(b)
+      setGamma(g)
+    } else {
+      setAlpha(0)
+      setBeta(0)
+      setGamma(0)
+    }
   }
   // // load and run posenet function
 
@@ -118,6 +129,11 @@ const PoseEstimation = observer(() => {
             }}
           />
         ) : null}
+        <div>
+          <span>alpha:{alpha} </span>
+          <span>beta:{beta} </span>
+          <span>gamma:{gamma} </span>
+        </div>
       </S.PageWrapper>
     </WelcomePages>
   )
