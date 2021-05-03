@@ -1,4 +1,4 @@
-import Styled from "styled-components";
+import Styled from "styled-components"
 
 export const PageWrapper = Styled.div`
 
@@ -8,6 +8,6 @@ export const PageWrapper = Styled.div`
     align-items: center;
     background-color: #FFD733;
     width:100%;
-    height:670px;
+    height:auto;
 
-`;
+`

@@ -53,7 +53,7 @@ const PoseEstimation = observer(() => {
         setBeta(0)
         setGamma(0)
       }
-    }, 100)
+    }, 1000)
   }
   // // load and run posenet function
 
