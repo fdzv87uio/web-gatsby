@@ -38,7 +38,7 @@ const PoseEstimation = observer(() => {
 
   const handleOrientation = event => {
     setAlfa(event)
-    console.log(alfa)
+    console.log(event)
   }
   // // load and run posenet function
 
