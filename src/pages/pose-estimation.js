@@ -28,6 +28,13 @@ const PoseEstimation = observer(() => {
   }, [])
   //load rotation coordinates
 
+  async function runGyroscope() {
+    let wd = await window.addEventListener(
+      "deviceorientation",
+      handleOrientation
+    )
+  }
+
   const handleOrientation = event => {
     if (event) {
       console.log(event)
@@ -48,11 +55,6 @@ const PoseEstimation = observer(() => {
   // // load and run posenet function
 
   async function runDetection() {
-    let wd = await window.addEventListener(
-      "deviceorientation",
-      handleOrientation
-    )
-
     const net = await posenet.load({
       inputResolution: { width: 320, height: 320 },
       scale: 0.5,
@@ -60,6 +62,7 @@ const PoseEstimation = observer(() => {
 
     setInterval(() => {
       detect(net)
+      runGyroscope()
     }, 100)
   }
 
