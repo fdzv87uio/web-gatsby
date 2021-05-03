@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import * as tf from "@tensorflow/tfjs"
 import * as posenet from "@tensorflow-models/posenet"
 import { Camera } from "react-cam"
@@ -12,16 +12,35 @@ const PoseEstimation = observer(() => {
   // refs for both the webcam and canvas components
   const camRef = useRef(null)
   const canvasRef = useRef(null)
+  // Gyroscope coordinates
+  const [alfa, setAlfa] = useState()
+  const [beta, setBeta] = useState()
+  const [gamma, setGamma] = useState()
 
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
-      typeof window.navigator !== "undefined"
+      typeof window.navigator !== "undefined" &&
+      typeof window.navigator.mediaDevices.getUserMedia !== "undefined"
     ) {
       runPosenet()
+      runGyroscope()
     }
   }, [])
-  // load and run posenet function
+  //load rotation coordinates
+
+  async function runGyroscope() {
+    let wd = await window.addEventListener(
+      "deviceorientation",
+      handleOrientation
+    )
+  }
+
+  const handleOrientation = event => {
+    setAlfa(event)
+    console.log(alfa)
+  }
+  // // load and run posenet function
 
   async function runPosenet() {
     const net = await posenet.load({
