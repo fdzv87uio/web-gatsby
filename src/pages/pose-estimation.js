@@ -37,19 +37,23 @@ const PoseEstimation = observer(() => {
   }
 
   const handleOrientation = event => {
-    if (event && typeof event !== "undefined") {
-      var a = event.deviceorientation.alpha
-      var b = event.deviceorientation.beta
-      var g = event.deviceorientation.gamma
+    setInterval(() => {
+      if (event) {
+        console.log(event)
+        console.log(event.alpha)
+        var a = event.alpha
+        var b = event.beta
+        var g = event.gamma
 
-      setAlpha(a)
-      setBeta(b)
-      setGamma(g)
-    } else {
-      setAlpha(0)
-      setBeta(0)
-      setGamma(0)
-    }
+        setAlpha(a)
+        setBeta(b)
+        setGamma(g)
+      } else {
+        setAlpha(0)
+        setBeta(0)
+        setGamma(0)
+      }
+    }, 100)
   }
   // // load and run posenet function
 
@@ -129,12 +133,12 @@ const PoseEstimation = observer(() => {
             }}
           />
         ) : null}
-        <div>
-          <span>alpha:{alpha} </span>
-          <span>beta:{beta} </span>
-          <span>gamma:{gamma} </span>
-        </div>
       </S.PageWrapper>
+      <div>
+        <span>alpha:{alpha} </span>
+        <span>beta:{beta} </span>
+        <span>gamma:{gamma} </span>
+      </div>
     </WelcomePages>
   )
 })
