@@ -23,41 +23,36 @@ const PoseEstimation = observer(() => {
       typeof window.navigator !== "undefined" &&
       typeof window.navigator.mediaDevices.getUserMedia !== "undefined"
     ) {
-      runPosenet()
-      runGyroscope()
+      runDetection()
     }
   }, [])
   //load rotation coordinates
 
-  async function runGyroscope() {
+  const handleOrientation = event => {
+    if (event) {
+      console.log(event)
+      console.log(event.alpha)
+      var a = event.alpha
+      var b = event.beta
+      var g = event.gamma
+
+      setAlpha(a)
+      setBeta(b)
+      setGamma(g)
+    } else {
+      setAlpha(0)
+      setBeta(0)
+      setGamma(0)
+    }
+  }
+  // // load and run posenet function
+
+  async function runDetection() {
     let wd = await window.addEventListener(
       "deviceorientation",
       handleOrientation
     )
-  }
 
-  const handleOrientation = event => {
-    setInterval(() => {
-      if (event) {
-        console.log(event)
-        console.log(event.alpha)
-        var a = event.alpha
-        var b = event.beta
-        var g = event.gamma
-
-        setAlpha(a)
-        setBeta(b)
-        setGamma(g)
-      } else {
-        setAlpha(0)
-        setBeta(0)
-        setGamma(0)
-      }
-    }, 1000)
-  }
-  // // load and run posenet function
-
-  async function runPosenet() {
     const net = await posenet.load({
       inputResolution: { width: 320, height: 320 },
       scale: 0.5,
