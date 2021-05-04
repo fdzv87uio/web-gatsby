@@ -26,7 +26,6 @@ const PoseEstimation = observer(() => {
       typeof window !== "undefined" &&
       typeof window.navigator !== "undefined"
     ) {
-      runGyroscope()
       runPosenet()
     }
   }, [])
@@ -62,6 +61,7 @@ const PoseEstimation = observer(() => {
 
     setInterval(() => {
       detect(net)
+      runGyroscope()
     }, 100)
   }
 
