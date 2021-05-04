@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import * as tf from "@tensorflow/tfjs"
 import * as posenet from "@tensorflow-models/posenet"
-// import { Camera } from "react-cam"
-import { Camera } from "react-camera-pro"
+import { Camera } from "react-cam"
 import * as S from "../styles/pose_estimation.styles"
 import WelcomePages from "../layouts/WelcomePages"
 import { observer } from "mobx-react"
@@ -17,84 +16,73 @@ const PoseEstimation = observer(() => {
   // refs for both the webcam and canvas components
   const camRef = useRef(null)
   const canvasRef = useRef(null)
-  const feedRef = useRef(null)
   // Gyroscope coordinates
   const [alpha, setAlpha] = useState()
   const [beta, setBeta] = useState()
   const [gamma, setGamma] = useState()
-
-  // current image hooks
-  const [currentImage, setCurrentImage] = useState()
-  // camera ready hook
-  const [cameraReady, setCameraReady] = useState()
 
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
       typeof window.navigator !== "undefined"
     ) {
-      runCamera()
-      runPosenet()
+      runGyroscope()
     }
   }, [])
   // //load rotation coordinates
 
-  // async function runGyroscope() {
-  //   let wd = await window.addEventListener(
-  //     "deviceorientation",
-  //     handleOrientation
-  //   )
-  //   return (
-  //     <div>
-  //       <span>alpha:{alpha} </span>
-  //       <span>beta:{beta} </span>
-  //       <span>gamma:{gamma} </span>
-  //     </div>
-  //   )
-  // }
+  function runGyroscope() {
+    var res = window.addEventListener("deviceorientation", handleOrientation)
+  }
 
-  // const handleOrientation = event => {
-  //   if (event) {
-  //     console.log(event)
-  //     console.log(event.alpha)
-  //     var a = event.alpha
-  //     var b = event.beta
-  //     var g = event.gamma
+  const handleOrientation = event => {
+    console.log(event)
+    if (event) {
+      var a = event.alpha
+      var b = event.beta
+      var g = event.gamma
 
-  //     setAlpha(a)
-  //     setBeta(b)
-  //     setGamma(g)
-  //   } else {
-  //     setAlpha(0)
-  //     setBeta(0)
-  //     setGamma(0)
-  //   }
-  // }
+      setAlpha(a)
+      setBeta(b)
+      setGamma(g)
+    } else {
+      setAlpha(0)
+      setBeta(0)
+      setGamma(0)
+    }
+  }
   // // // load and run posenet function
 
-  const runPosenet = async () => {
-    //run posenet
+  async function runPosenet() {
     const net = await posenet.load({
-      inputResolution: { width: 600, height: 600 },
+      inputResolution: { width: 480, height: 320 },
       scale: 0.5,
     })
-    if (currentImage !== null) {
-      setInterval(() => {
-        detect(net)
-      }, 100)
-    }
+
+    setInterval(() => {
+      detect(net)
+    }, 100)
   }
 
   const detect = async net => {
-    // Get Video Properties
-    const image = feedRef.current
-    // Make detections
-    const pose = await net.estimateSinglePose(image)
-    console.log(pose)
-    drawCanvas(pose, 600, 600, canvasRef)
+    if (
+      typeof camRef.current.camRef.current !== "undefined" &&
+      camRef.current.camRef.current !== null &&
+      camRef.current.camRef.current.readyState == 4
+    ) {
+      // Get Video Properties
+      const video = camRef.current.camRef.current
+      const videoWidth = camRef.current.props.width
+      const videoHeight = camRef.current.props.height
+
+      // Make detections
+      const pose = await net.estimateSinglePose(video)
+      console.log(pose)
+      drawCanvas(pose, video, videoWidth, videoHeight, canvasRef)
+    }
   }
 
-  const drawCanvas = (pose, videoWidth, videoHeight, canvas) => {
+  const drawCanvas = (pose, video, videoWidth, videoHeight, canvas) => {
     const ctx = canvas.current.getContext("2d")
     canvas.current.width = videoWidth
     canvas.current.height = videoHeight
@@ -103,29 +91,45 @@ const PoseEstimation = observer(() => {
     drawKeypoints(kp, 0.35, ctx)
   }
 
-  // function capture(imgSrc) {
-  //   console.log(imgSrc)
-  // }
-
-  const runCamera = () => {
-    setInterval(() => {
-      try {
-        setCurrentImage(camRef.current.takePhoto())
-      } catch (error) {
-        if (error) {
-          console.log(error)
-        }
-      }
-    }, 100)
+  function capture(imgSrc) {
+    console.log(imgSrc)
   }
 
   return (
     <WelcomePages>
       <S.PageWrapper>
-        <Camera ref={camRef} />
-        <S.CameraFeed src={currentImage} ref={feedRef} alt="Nada" />
-        <canvas ref={canvasRef} style={{ position: "absolute", top: 0 }} />
+        {typeof window !== "undefined" &&
+        typeof window.navigator !== "undefined" ? (
+          <Camera
+            showFocus={true}
+            front={false}
+            capture={capture}
+            ref={camRef}
+            width="480"
+            height="320"
+          />
+        ) : null}
+        {typeof window !== "undefined" &&
+        typeof window.navigator !== "undefined" ? (
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: "absolute",
+              marginLeft: "auto",
+              marginRight: "auto",
+              left: 0,
+              right: 0,
+              textAlign: "center",
+              zIndex: 9,
+              width: 480,
+              height: 320,
+            }}
+          />
+        ) : null}
       </S.PageWrapper>
+      <p>
+        a: {alpha} <br /> b: {beta} <br /> g: {gamma}{" "}
+      </p>
     </WelcomePages>
   )
 })
