@@ -123,15 +123,22 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
  * Draw pose keypoints onto a canvas
  */
 export function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
-  for (let i = 0; i < keypoints.length; i++) {
-    const keypoint = keypoints[i]
+  var kp9 = keypoints[9]
+  var kp10 = keypoints[10]
+  var kp15 = keypoints[15]
+  var kp16 = keypoints[16]
 
-    if (keypoint.score < minConfidence) {
-      continue
-    }
-
-    const { y, x } = keypoint.position
-    drawPoint(ctx, y * scale, x * scale, 3, color)
+  if (kp9.score > minConfidence) {
+    drawPoint(ctx, kp9.position.y, kp9.position.x, 20, "#ffffff")
+  }
+  if (kp10.score > minConfidence) {
+    drawPoint(ctx, kp10.position.y, kp10.position.x, 20, "#ffffff")
+  }
+  if (kp15.score > minConfidence) {
+    drawPoint(ctx, kp15.position.y, kp15.position.x, 20, "#ffffff")
+  }
+  if (kp16.score > minConfidence) {
+    drawPoint(ctx, kp16.position.y, kp16.position.x, 20, "#ffffff")
   }
 }
 
