@@ -27,6 +27,7 @@ const PoseEstimation = observer(() => {
       typeof window.navigator !== "undefined"
     ) {
       runGyroscope()
+      runPosenet()
     }
   }, [])
   // //load rotation coordinates
@@ -55,7 +56,7 @@ const PoseEstimation = observer(() => {
 
   async function runPosenet() {
     const net = await posenet.load({
-      inputResolution: { width: 480, height: 320 },
+      inputResolution: { width: 320, height: 320 },
       scale: 0.5,
     })
 
@@ -105,7 +106,7 @@ const PoseEstimation = observer(() => {
             front={false}
             capture={capture}
             ref={camRef}
-            width="480"
+            width="320"
             height="320"
           />
         ) : null}
@@ -121,7 +122,7 @@ const PoseEstimation = observer(() => {
               right: 0,
               textAlign: "center",
               zIndex: 9,
-              width: 480,
+              width: 320,
               height: 320,
             }}
           />
