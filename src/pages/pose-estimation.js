@@ -35,10 +35,8 @@ const PoseEstimation = observer(() => {
 
   async function runPosenet() {
     const net = await posenet.load({
-      architecture: "MobileNetV1",
       inputResolution: { width: 320, height: 320 },
-      outputStride: 16,
-      multiplier: 0.5,
+      scale: 0.5,
     })
 
     setInterval(() => {
@@ -66,6 +64,7 @@ const PoseEstimation = observer(() => {
       captureFrame()
       drawCanvas(pose, video, videoWidth, videoHeight, canvasRef)
       detectGyroscope()
+      console.log(pose)
     }
   }
 
@@ -78,14 +77,15 @@ const PoseEstimation = observer(() => {
     drawKeypoints(kp, 0.35, ctx)
   }
 
-  const detectGyroscope = () => {
-    window.addEventListener("deviceorientation", handleOrientation)
+  const detectGyroscope = async () => {
+    var res = await window.addEventListener("devicemotion", handleOrientation)
   }
 
   const handleOrientation = event => {
     var res = event
-    setLog(res.alpha)
-    window.removeEventListener("deviceorientation", handleOrientation)
+    console.log(res.acceleration.z)
+    setLog(res.acceleration.z)
+    window.removeEventListener("devicemotion", handleOrientation)
   }
 
   return (
