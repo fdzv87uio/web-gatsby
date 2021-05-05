@@ -6,11 +6,7 @@ import * as S from "../styles/pose_estimation.styles"
 import WelcomePages from "../layouts/WelcomePages"
 import { observer } from "mobx-react"
 import UserStore from "../stores/UserStore"
-import {
-  drawKeypoints,
-  drawSkeleton,
-  drawPoint,
-} from "../utils/tensorflow-utils"
+import { drawKeypoints } from "../utils/tensorflow-utils"
 
 import DeviceOrientation from "react-device-orientation"
 
@@ -22,7 +18,8 @@ const PoseEstimation = observer(() => {
   const [alpha, setAlpha] = useState()
   const [beta, setBeta] = useState()
   const [gamma, setGamma] = useState()
-
+  // current image hook
+  const [currentImage, setCurrentImage] = useState()
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
@@ -33,26 +30,6 @@ const PoseEstimation = observer(() => {
   }, [])
   // //load rotation coordinates
 
-  function runGyroscope() {
-    var res = window.addEventListener("deviceorientation", handleOrientation)
-  }
-
-  const handleOrientation = event => {
-    console.log(event)
-    if (event) {
-      var a = event.alpha
-      var b = event.beta
-      var g = event.gamma
-
-      setAlpha(a)
-      setBeta(b)
-      setGamma(g)
-    } else {
-      setAlpha(0)
-      setBeta(0)
-      setGamma(0)
-    }
-  }
   // // // load and run posenet function
 
   async function runPosenet() {
@@ -63,7 +40,6 @@ const PoseEstimation = observer(() => {
 
     setInterval(() => {
       detect(net)
-      // runGyroscope()
     }, 100)
   }
 
@@ -81,6 +57,8 @@ const PoseEstimation = observer(() => {
       // Make detections
       const pose = await net.estimateSinglePose(video)
       console.log(pose)
+      camRef.current.capture()
+
       drawCanvas(pose, video, videoWidth, videoHeight, canvasRef)
     }
   }
@@ -96,21 +74,25 @@ const PoseEstimation = observer(() => {
 
   function capture(imgSrc) {
     console.log(imgSrc)
+    setCurrentImage(imgSrc)
   }
 
   return (
     <WelcomePages>
       <S.PageWrapper>
+        <img src={currentImage} style={{ width: 320, height: 320 }} />
         {typeof window !== "undefined" &&
         typeof window.navigator !== "undefined" ? (
-          <Camera
-            showFocus={true}
-            front={false}
-            capture={capture}
-            ref={camRef}
-            width="320"
-            height="320"
-          />
+          <div style={{ display: "none" }}>
+            <Camera
+              showFocus={true}
+              front={false}
+              capture={capture}
+              ref={camRef}
+              width="320"
+              height="320"
+            />
+          </div>
         ) : null}
         {typeof window !== "undefined" &&
         typeof window.navigator !== "undefined" ? (
