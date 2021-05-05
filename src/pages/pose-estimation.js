@@ -26,7 +26,6 @@ const PoseEstimation = observer(() => {
       typeof window !== "undefined" &&
       typeof window.navigator !== "undefined"
     ) {
-      detectGyroscope()
       runPosenet()
     }
   }, [])
@@ -62,8 +61,10 @@ const PoseEstimation = observer(() => {
 
       // Make detections
       const pose = await net.estimateSinglePose(video)
+
       captureFrame()
       drawCanvas(pose, video, videoWidth, videoHeight, canvasRef)
+      detectGyroscope()
     }
   }
 
@@ -84,6 +85,7 @@ const PoseEstimation = observer(() => {
     var res = event
     console.log(res.acceleration.z)
     setLog(res.acceleration.z)
+    window.removeEventListener("devicemotion", handleOrientation)
   }
 
   return (
