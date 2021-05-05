@@ -56,8 +56,8 @@ const PoseEstimation = observer(() => {
     if (typeof camRef.current !== "undefined" && camRef.current !== null) {
       // Get Video Properties
       const video = cIRef.current
-      const videoWidth = 320
-      const videoHeight = 320
+      const videoWidth = 1900
+      const videoHeight = 1000
 
       // Make detections
       const pose = await net.estimateSinglePose(video)
@@ -85,7 +85,6 @@ const PoseEstimation = observer(() => {
     var res = event
     console.log(res.acceleration.z)
     setLog(res.acceleration.z)
-    window.removeEventListener("devicemotion", handleOrientation)
   }
 
   return (
@@ -122,8 +121,8 @@ const PoseEstimation = observer(() => {
               right: 0,
               textAlign: "center",
               zIndex: 9,
-              width: 320,
-              height: 320,
+              width: 1900,
+              height: 1000,
             }}
           />
         ) : null}
