@@ -78,17 +78,14 @@ const PoseEstimation = observer(() => {
   }
 
   const detectGyroscope = async () => {
-    var res = await window.addEventListener(
-      "deviceorientation",
-      handleOrientation
-    )
+    var res = await window.addEventListener("devicemotion", handleOrientation)
   }
 
   const handleOrientation = event => {
     var res = event
     console.log(res.acceleration.z)
     setLog(res.acceleration.z)
-    window.removeEventListener("deviceorientation", handleOrientation)
+    window.removeEventListener("devicemotion", handleOrientation)
   }
 
   return (
