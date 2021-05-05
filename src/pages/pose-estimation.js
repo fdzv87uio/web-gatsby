@@ -35,9 +35,9 @@ const PoseEstimation = observer(() => {
 
   async function runPosenet() {
     const net = await posenet.load({
-      inputResolution: { width: 320, height: 320 },
       architecture: "MobileNetV1",
-      outputStride: 32,
+      inputResolution: { width: 320, height: 320 },
+      outputStride: 16,
       multiplier: 0.5,
     })
 
