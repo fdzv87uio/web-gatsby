@@ -41,7 +41,7 @@ const PoseEstimation = observer(() => {
 
     setInterval(() => {
       detect(net)
-    }, 100)
+    }, 500)
   }
 
   const captureFrame = () => {
