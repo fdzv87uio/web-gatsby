@@ -8,8 +8,6 @@ import { observer } from "mobx-react"
 import UserStore from "../stores/UserStore"
 import { drawKeypoints } from "../utils/tensorflow-utils"
 
-import DeviceOrientation from "react-device-orientation"
-
 const PoseEstimation = observer(() => {
   // refs for both the webcam and canvas components
   const camRef = useRef(null)
@@ -19,6 +17,8 @@ const PoseEstimation = observer(() => {
   const [alpha, setAlpha] = useState()
   const [beta, setBeta] = useState()
   const [gamma, setGamma] = useState()
+
+  const [log, setLog] = useState()
   // current image hook
   const [currentImage, setCurrentImage] = useState()
   useEffect(() => {
@@ -61,10 +61,9 @@ const PoseEstimation = observer(() => {
 
       // Make detections
       const pose = await net.estimateSinglePose(video)
-
-      console.log(pose)
       captureFrame()
       drawCanvas(pose, video, videoWidth, videoHeight, canvasRef)
+      detectGyroscope()
     }
   }
 
@@ -77,9 +76,14 @@ const PoseEstimation = observer(() => {
     drawKeypoints(kp, 0.35, ctx)
   }
 
-  function capture(imgSrc) {
-    console.log(imgSrc)
-    setCurrentImage(imgSrc)
+  const detectGyroscope = () => {
+    window.addEventListener("deviceorientation", handleOrientation)
+  }
+
+  const handleOrientation = event => {
+    var res = event
+    setLog(res.alpha)
+    window.removeEventListener("deviceorientation", handleOrientation)
   }
 
   return (
@@ -122,16 +126,7 @@ const PoseEstimation = observer(() => {
           />
         ) : null}
       </S.PageWrapper>
-      <DeviceOrientation>
-        {({ absolute, alpha, beta, gamma }) => (
-          <div>
-            {`Absolute: ${absolute}`}
-            {`Alpha: ${alpha}`}
-            {`Beta: ${beta}`}
-            {`Gamma: ${gamma}`}
-          </div>
-        )}
-      </DeviceOrientation>
+      <span>log: {log}</span>
     </WelcomePages>
   )
 })
