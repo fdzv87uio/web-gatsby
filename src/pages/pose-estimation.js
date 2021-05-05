@@ -12,6 +12,8 @@ import {
   drawPoint,
 } from "../utils/tensorflow-utils"
 
+import DeviceOrientation from "react-device-orientation"
+
 const PoseEstimation = observer(() => {
   // refs for both the webcam and canvas components
   const camRef = useRef(null)
@@ -61,7 +63,7 @@ const PoseEstimation = observer(() => {
 
     setInterval(() => {
       detect(net)
-      runGyroscope()
+      // runGyroscope()
     }, 100)
   }
 
@@ -128,9 +130,16 @@ const PoseEstimation = observer(() => {
           />
         ) : null}
       </S.PageWrapper>
-      <p>
-        a: {alpha} <br /> b: {beta} <br /> g: {gamma}{" "}
-      </p>
+      <DeviceOrientation>
+        {({ absolute, alpha, beta, gamma }) => (
+          <div>
+            {`Absolute: ${absolute}`}
+            {`Alpha: ${alpha}`}
+            {`Beta: ${beta}`}
+            {`Gamma: ${gamma}`}
+          </div>
+        )}
+      </DeviceOrientation>
     </WelcomePages>
   )
 })
