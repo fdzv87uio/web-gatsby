@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react"
 import * as tf from "@tensorflow/tfjs"
 import * as posenet from "@tensorflow-models/posenet"
-import { Camera } from "react-camera-pro"
+// import { Camera } from "react-camera-pro"
+import { Camera } from "react-cam"
 import * as S from "../styles/pose_estimation.styles"
 import WelcomePages from "../layouts/WelcomePages"
 import { observer } from "mobx-react"
@@ -53,16 +54,20 @@ const PoseEstimation = observer(() => {
   }
 
   const detect = async net => {
-    if (typeof camRef.current !== "undefined" && camRef.current !== null) {
+    if (
+      typeof camRef.current !== "undefined" &&
+      camRef.current !== null &&
+      typeof camRef.current.camRef.current !== "undefined" &&
+      camRef.current.camRef.current.readyState === 4
+    ) {
       // Get Video Properties
-      const video = cIRef.current
+      const video = camRef.current.camRef.current
       const videoWidth = 320
       const videoHeight = 320
 
       // Make detections
       const pose = await net.estimateSinglePose(video)
-
-      captureFrame()
+      console.log(pose)
       drawCanvas(pose, video, videoWidth, videoHeight, canvasRef)
       detectGyroscope()
     }
@@ -88,28 +93,40 @@ const PoseEstimation = observer(() => {
     window.removeEventListener("devicemotion", handleOrientation)
   }
 
+  function capture(imgSrc) {
+    console.log(imgSrc)
+  }
+
   return (
     <WelcomePages>
       <S.PageWrapper>
-        <img
+        {/* <img
           src={currentImage}
           style={{ width: 320, height: 320 }}
           ref={cIRef}
-        />
+        /> */}
         {typeof window !== "undefined" &&
         typeof window.navigator !== "undefined" ? (
-          <div style={{ display: "none" }}>
-            <Camera ref={camRef} />
-            {/* <Camera
-              showFocus={true}
-              front={false}
-              capture={capture}
-              ref={camRef}
-              width="320"
-              height="320"
-            /> */}
-          </div>
-        ) : null}
+          <Camera
+            showFocus={true}
+            front={false}
+            capture={capture}
+            ref={camRef}
+            width="320"
+            height="320"
+          />
+        ) : // <div style={{ display: "none" }}>
+        //   <Camera ref={camRef} />
+        //   <Camera
+        //     showFocus={true}
+        //     front={false}
+        //     capture={capture}
+        //     ref={camRef}
+        //     width="320"
+        //     height="320"
+        //   />
+        // </div>
+        null}
         {typeof window !== "undefined" &&
         typeof window.navigator !== "undefined" ? (
           <canvas
