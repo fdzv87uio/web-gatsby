@@ -1,25 +1,30 @@
 import React, { useEffect } from "react"
 import * as S from "../styles/index.styles"
 import WelcomePages from "../layouts/WelcomePages"
-// import CarouselItem from "../components/CarouselItem/CarouselItem.component"
+import CarouselItem from "../components/CarouselItem/CarouselItem.component"
 import { Link } from "gatsby"
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward"
 import { observer } from "mobx-react"
 import UserStore from "../stores/UserStore"
-import doodle1 from "../images/doodle1.png"
-import doodle2 from "../images/doodle2.png"
-import doodle3 from "../images/doodle3.png"
+const doodle1 =  require("../images/doodle1.png")
+const doodle2 =  require("../images/doodle2.png")
+const doodle3 =  require("../images/doodle3.png")
+import Carousel from "react-material-ui-carousel"
+
 
 const Items = [
   {
+    key:1,
     text: "It's a simple three step process",
     image: doodle1,
   },
   {
+    key:2,
     text: "We capture two photos",
     image: doodle2,
   },
   {
+    key:3,
     text: "And your fit preferences...",
     image: doodle3,
   },
@@ -30,32 +35,25 @@ function Index() {
     console.log(UserStore.terms)
     console.log(UserStore.age)
   }, [])
+
+  interface carouselItem {
+    text: String,
+    key: number,
+    image: any
+  }
+
+ 
   return (
     <WelcomePages>
       <S.PageWrapper>
         <S.CarouselWrapper>
-          {/* <S.CustomCarousel
-            indicatorIconButtonProps={{
-              style: {
-                color: "#1958BC",
-              },
-            }}
-            activeIndicatorIconButtonProps={{
-              style: {
-                color: "#FFD733",
-              },
-            }}
-            indicatorContainerProps={{
-              style: {
-                position: "relative",
-                bottom: 20,
-              },
-            }}
+          <S.CustomCarousel
           >
-            {Items.map((item, key) => (
-              <CarouselItem key={key} item={item} />
-            ))}
-          </S.CustomCarousel> */}
+            {Items.map((item:carouselItem) => {
+
+              return (<CarouselItem key={item.key} image={item.image} text={item.text} />)
+             })}
+          </S.CustomCarousel>
         </S.CarouselWrapper>
         <S.ButtonWrapper>
           <Link to="/terms-and-conditions">

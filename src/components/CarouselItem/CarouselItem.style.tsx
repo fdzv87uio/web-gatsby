@@ -1,7 +1,11 @@
 import Styled from "styled-components";
 import { Paper } from "@material-ui/core";
 
-export const Slide = Styled(Paper)`
+interface slideProps {
+    image: any;
+  }
+
+export const Slide = Styled(Paper)<slideProps>`
 
     width: 100%;
     height: 470px;

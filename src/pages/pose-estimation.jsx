@@ -8,6 +8,8 @@ import WelcomePages from "../layouts/WelcomePages"
 import { observer } from "mobx-react"
 import UserStore from "../stores/UserStore"
 import { drawKeypoints } from "../utils/tensorflow-utils"
+import DeviceOrientation from "react-device-orientation"
+import { number } from "prop-types"
 
 const PoseEstimation = observer(() => {
   // refs for both the webcam and canvas components
@@ -25,7 +27,8 @@ const PoseEstimation = observer(() => {
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
-      typeof window.navigator !== "undefined"
+      typeof window.navigator !== "undefined" &&
+      typeof window.navigator.getUserMedia !== "undefined"
     ) {
       runPosenet()
     }
@@ -37,20 +40,12 @@ const PoseEstimation = observer(() => {
   async function runPosenet() {
     const net = await posenet.load({
       inputResolution: { width: 320, height: 320 },
-      scale: 0.5,
+      scale: 0.5
     })
 
     setInterval(() => {
       detect(net)
-    }, 100)
-  }
-
-  const captureFrame = () => {
-    try {
-      setCurrentImage(camRef.current.takePhoto())
-    } catch (error) {
-      console.log(error)
-    }
+    }, 500)
   }
 
   const detect = async net => {
@@ -69,7 +64,6 @@ const PoseEstimation = observer(() => {
       const pose = await net.estimateSinglePose(video)
       console.log(pose)
       drawCanvas(pose, video, videoWidth, videoHeight, canvasRef)
-      detectGyroscope()
     }
   }
 
@@ -82,20 +76,15 @@ const PoseEstimation = observer(() => {
     drawKeypoints(kp, 0.35, ctx)
   }
 
-  const detectGyroscope = async () => {
-    var res = await window.addEventListener("devicemotion", handleOrientation)
-  }
-
-  const handleOrientation = event => {
-    var res = event
-    console.log(res.acceleration.z)
-    setLog(res.acceleration.z)
-    window.removeEventListener("devicemotion", handleOrientation)
-  }
-
   function capture(imgSrc) {
     console.log(imgSrc)
   }
+
+  // const gyroListener = (r, t, s) => {
+  //   console.log(r)
+  //   console.log(t)
+  //   console.log(s)
+  // }
 
   return (
     <WelcomePages>
@@ -106,7 +95,8 @@ const PoseEstimation = observer(() => {
           ref={cIRef}
         /> */}
         {typeof window !== "undefined" &&
-        typeof window.navigator !== "undefined" ? (
+        typeof window.navigator !== "undefined" &&
+        typeof window.navigator.getUserMedia !== "undefined" ? (
           <Camera
             showFocus={true}
             front={false}
@@ -145,7 +135,16 @@ const PoseEstimation = observer(() => {
           />
         ) : null}
       </S.PageWrapper>
-      <span>log: {log}</span>
+      <DeviceOrientation>
+        {({ absolute, alpha, beta, gamma }) => (
+          <div>
+            {`Absolute: ${absolute}`}
+            {`Alpha: ${alpha}`}
+            {`Beta: ${beta}`}
+            {`Gamma: ${gamma}`}
+          </div>
+        )}
+      </DeviceOrientation>
     </WelcomePages>
   )
 })

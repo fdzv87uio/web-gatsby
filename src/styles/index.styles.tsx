@@ -1,5 +1,5 @@
 import Styled from "styled-components"
-// import Carousel from "react-material-ui-carousel"
+import Carousel from "react-material-ui-carousel"
 
 export const PageWrapper = Styled.div`
 
@@ -27,13 +27,13 @@ export const CarouselWrapper = Styled.div`
 
 `
 
-// export const CustomCarousel = Styled(Carousel)`
+export const CustomCarousel = Styled(Carousel)`
 
-//     width: 100%;
-//     height: 550px;
-//     border-radius: 0px 0px 15px 15px;
+    width: 100%;
+    height: 550px;
+    border-radius: 0px 0px 15px 15px;
 
-// `
+`
 
 export const ButtonWrapper = Styled.div`
 

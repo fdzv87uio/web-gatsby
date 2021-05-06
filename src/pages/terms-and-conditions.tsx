@@ -13,17 +13,17 @@ import UserStore from "../stores/UserStore"
 
 const TermsAndConditions = () => {
   const [showAlert, setShowAlert] = useState(false)
-  const [alertMessage, setAlertMessage] = useState()
+  const [alertMessage, setAlertMessage] = useState<string>()
   const [terms, setTerms] = useState(false)
   const [age, setAge] = useState(false)
 
   const validateInputs = () => {
     if (terms == false) {
-      setAlertMessage(" Error: you must agree with our terms and conditions")
+      setAlertMessage("Error: you must agree with our terms and conditions")
       setShowAlert(true)
       return
     } else if (age == false) {
-      setAlertMessage(" Error: you must be at least 18 years of age to enter")
+      setAlertMessage("Error: you must be at least 18 years of age to enter")
       setShowAlert(true)
       return
     } else {

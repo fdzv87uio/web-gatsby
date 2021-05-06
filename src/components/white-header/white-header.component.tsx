@@ -3,7 +3,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import * as S from "./white-header.styles"
 import { Link } from "gatsby"
 
-function WhiteHeader({ url }) {
+function WhiteHeader({ url } : { url: string}) {
   return (
     <S.HeaderWrapper>
       <Link to={url}>
