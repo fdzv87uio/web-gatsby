@@ -23,14 +23,15 @@ const PoseEstimation = observer(() => {
 
   const [log, setLog] = useState()
   // current image hook
-  const [currentImage, setCurrentImage] = useState()
+  const [gyroscopeOn, setGyroscopeOn] = useState()
+
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
-      typeof window.navigator !== "undefined" &&
-      typeof window.navigator.getUserMedia !== "undefined"
+      typeof window.navigator !== "undefined" 
     ) {
       runPosenet()
+      setGyroscopeOn(true)
     }
   }, [])
   // //load rotation coordinates
@@ -80,11 +81,6 @@ const PoseEstimation = observer(() => {
     console.log(imgSrc)
   }
 
-  // const gyroListener = (r, t, s) => {
-  //   console.log(r)
-  //   console.log(t)
-  //   console.log(s)
-  // }
 
   return (
     <WelcomePages>
@@ -95,8 +91,7 @@ const PoseEstimation = observer(() => {
           ref={cIRef}
         /> */}
         {typeof window !== "undefined" &&
-        typeof window.navigator !== "undefined" &&
-        typeof window.navigator.getUserMedia !== "undefined" ? (
+        typeof window.navigator !== "undefined"  ? (
           <Camera
             showFocus={true}
             front={false}
@@ -134,8 +129,8 @@ const PoseEstimation = observer(() => {
             }}
           />
         ) : null}
-      </S.PageWrapper>
-      <DeviceOrientation>
+        { gyroscopeOn ?
+        <DeviceOrientation>
         {({ absolute, alpha, beta, gamma }) => (
           <div>
             {`Absolute: ${absolute}`}
@@ -144,7 +139,9 @@ const PoseEstimation = observer(() => {
             {`Gamma: ${gamma}`}
           </div>
         )}
-      </DeviceOrientation>
+      </DeviceOrientation> : null}
+      </S.PageWrapper>
+      
     </WelcomePages>
   )
 })
