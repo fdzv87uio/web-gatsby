@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
+// Netpose tensor flow dependencies
 import * as tf from "@tensorflow/tfjs"
 import * as posenet from "@tensorflow-models/posenet"
 // import { Camera } from "react-camera-pro"
@@ -6,22 +7,20 @@ import { Camera } from "react-cam"
 import * as S from "../styles/pose_estimation.styles"
 import WelcomePages from "../layouts/WelcomePages"
 import { observer } from "mobx-react"
-import UserStore from "../stores/UserStore"
+// import UserStore from "../stores/UserStore"
 import { drawKeypoints } from "../utils/tensorflow-utils"
 import DeviceOrientation from "react-device-orientation"
-import { number } from "prop-types"
+
 
 const PoseEstimation = observer(() => {
   // refs for both the webcam and canvas components
   const camRef = useRef(null)
   const canvasRef = useRef(null)
-  const cIRef = useRef(null)
   // Gyroscope coordinates
-  const [alpha, setAlpha] = useState()
-  const [beta, setBeta] = useState()
-  const [gamma, setGamma] = useState()
+  // const [alpha, setAlpha] = useState()
+  // const [beta, setBeta] = useState()
+  // const [gamma, setGamma] = useState()
 
-  const [log, setLog] = useState()
   // current image hook
   const [gyroscopeOn, setGyroscopeOn] = useState()
 
@@ -30,15 +29,17 @@ const PoseEstimation = observer(() => {
       typeof window !== "undefined" &&
       typeof window.navigator !== "undefined" 
     ) {
-      runPosenet()
-      setGyroscopeOn(true)
+      runPosenet().then(()=>{
+        setGyroscopeOn(true);
+      })
+      
     }
   }, [])
   // //load rotation coordinates
 
   // // // load and run posenet function
 
-  async function runPosenet() {
+  async function runPosenet(){
     const net = await posenet.load({
       inputResolution: { width: 320, height: 320 },
       scale: 0.5
@@ -85,13 +86,8 @@ const PoseEstimation = observer(() => {
   return (
     <WelcomePages>
       <S.PageWrapper>
-        {/* <img
-          src={currentImage}
-          style={{ width: 320, height: 320 }}
-          ref={cIRef}
-        /> */}
         {typeof window !== "undefined" &&
-        typeof window.navigator !== "undefined"  ? (
+        typeof window.navigator !== "undefined" ? (
           <Camera
             showFocus={true}
             front={false}
@@ -100,17 +96,7 @@ const PoseEstimation = observer(() => {
             width="320"
             height="320"
           />
-        ) : // <div style={{ display: "none" }}>
-        //   <Camera ref={camRef} />
-        //   <Camera
-        //     showFocus={true}
-        //     front={false}
-        //     capture={capture}
-        //     ref={camRef}
-        //     width="320"
-        //     height="320"
-        //   />
-        // </div>
+        ) :
         null}
         {typeof window !== "undefined" &&
         typeof window.navigator !== "undefined" ? (
