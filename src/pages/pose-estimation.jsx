@@ -87,7 +87,8 @@ const PoseEstimation = observer(() => {
     <WelcomePages>
       <S.PageWrapper>
         {typeof window !== "undefined" &&
-        typeof window.navigator !== "undefined" ? (
+        typeof window.navigator !== "undefined" &&
+        gyroscopeOn ? (
           <Camera
             showFocus={true}
             front={false}
@@ -99,7 +100,8 @@ const PoseEstimation = observer(() => {
         ) :
         null}
         {typeof window !== "undefined" &&
-        typeof window.navigator !== "undefined" ? (
+        typeof window.navigator !== "undefined" &&
+        gyroscopeOn ? (
           <canvas
             ref={canvasRef}
             style={{
